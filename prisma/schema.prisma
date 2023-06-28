@@ -6,6 +6,46 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "cockroachdb"
   url      = env("DATABASE_URL")
+}
+
+model Movie {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  releaseDate DateTime
+  imageUrl    String
+  ageRating   Int
+  ticketPrice Int
+  tickets     Ticket[]
+}
+
+model Ticket {
+  id            String   @id @default(uuid())
+  dateTimeStart DateTime
+  seatNumber    Int
+  movie         Movie    @relation(fields: [movieId], references: [id])
+  movieId       String
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+}
+
+model User {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  password     String
+  name         String
+  age          Int
+  balance      Int
+  transactions Transaction[]
+  tickets      Ticket[]
+}
+
+model Transaction {
+  id     String   @id @default(uuid())
+  time   DateTime @default(now())
+  amount Int
+  user   User     @relation(fields: [userId], references: [id])
+  userId String
 }
