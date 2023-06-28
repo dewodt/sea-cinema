@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import TextField from "@/components/TextField";
 import Link from "next/link";
 
-const SignInForm = () => {
+const SignUpForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -16,8 +16,14 @@ const SignInForm = () => {
     >
       {/* Title */}
       <h1 className="text-center text-3xl font-bold text-custom-light-red xl:text-4xl">
-        Sign In
+        Sign Up
       </h1>
+      {/* Name */}
+      <TextField type="text" placeholder="Name" />
+
+      {/* Age */}
+      <TextField type="number" placeholder="Age" />
+
       {/* Username */}
       <TextField type="text" placeholder="Username" />
 
@@ -29,18 +35,18 @@ const SignInForm = () => {
         Submit
       </Button>
 
-      {/* Sign Up Options */}
+      {/* Sign In Options */}
       <p className="text-base font-medium text-custom-white xl:text-lg text-center">
-        {`Don't have an account yet? `}
+        {`Already have an account? `}
         <Link
-          href="/signup"
+          href="/signin"
           className="font-inter font-bold text-custom-light-red hover:underline"
         >
-          Sign Up
+          Sign In
         </Link>
       </p>
     </form>
   );
 };
 
-export default SignInForm;
+export default SignUpForm;
