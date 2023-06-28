@@ -15,9 +15,11 @@ module.exports = {
       colors: {
         "custom-light-red": "#E50914",
         "custom-dark-red": "#B81D24",
+        "custom-green": "#3FB160",
         "custom-soft-black": "#221F1F",
         "custom-white": "#F5F5F1",
-        "custom-gray": "#D7D2D0",
+        "custom-light-gray": "#D7D2D0",
+        "custom-dark-gray": "#646464",
       },
       fontFamily: {
         inter: ["var(--font-inter)"],
