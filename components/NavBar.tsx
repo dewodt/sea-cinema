@@ -84,14 +84,14 @@ const NavBar = ({
           <li className="flex flex-row items-center gap-4 self-center p-2 lg:p-0">
             <Button
               paddingY="10px"
-              paddingX="18px"
+              paddingX="22px"
               color="red"
               onClick={
                 !session ? () => signIn() : () => signOut({ redirect: false })
               }
             >
               <div className="flex flex-row items-center gap-3">
-                {!session ? "Masuk" : "Keluar"}
+                {!session ? "Sign In" : "Sign Out"}
               </div>
             </Button>
           </li>
