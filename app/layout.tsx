@@ -14,11 +14,6 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata = {
-  title: "Home | SEA Cinema",
-  description: "Home Page SEA Cinema",
-};
-
 export default function RootLayout({
   children,
 }: {
