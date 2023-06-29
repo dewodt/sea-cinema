@@ -6,14 +6,16 @@ const CustomToaster = () => {
       position="top-center"
       toastOptions={{
         loading: {
-          className: "border-[3px] border-custom-dark-gray font-inter font-medium",
+          className:
+            "border-[3px] border-custom-dark-gray font-inter font-medium",
         },
         success: {
           className: "border-[3px] border-custom-green font-inter font-medium",
           iconTheme: { primary: "#3FB160", secondary: "#FFFFFF" },
         },
         error: {
-          className: "border-[3px] border-custom-light-red font-inter font-medium",
+          className:
+            "border-[3px] border-custom-light-red font-inter font-medium",
           iconTheme: { primary: "#EF1B27", secondary: "#FFFFFF" },
         },
       }}

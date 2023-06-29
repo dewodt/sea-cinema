@@ -36,7 +36,7 @@ const SignUpForm = () => {
       </Button>
 
       {/* Sign In Options */}
-      <p className="text-base font-medium text-custom-white xl:text-lg text-center">
+      <p className="text-center text-base font-medium text-custom-white xl:text-lg">
         {`Already have an account? `}
         <Link
           href="/signin"

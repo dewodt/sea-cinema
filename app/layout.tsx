@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className={`bg-custom-soft-black flex min-h-screen flex-col ${
+        className={`flex min-h-screen flex-col bg-custom-soft-black ${
           navBarExpand && "h-screen overflow-hidden"
         }`}
       >
