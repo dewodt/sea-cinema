@@ -36,7 +36,7 @@ const Button = ({
       aria-label={ariaLabel}
       onClick={(e) => onClick(e)}
       style={{ padding: `${paddingY} ${paddingX}` }}
-      className={`xl:transititon relative flex h-fit items-center justify-center rounded-md font-inter text-base font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] xl:duration-300 xl:ease-in-out ${
+      className={`xl:transititon relative flex h-fit items-center justify-center rounded-md font-inter text-base font-bold leading-none shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] xl:duration-300 xl:ease-in-out ${
         fullWidth ? "w-full" : "w-fit"
       } ${
         !disabled
