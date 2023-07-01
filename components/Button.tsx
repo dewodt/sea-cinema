@@ -41,7 +41,7 @@ const Button = ({
       } ${
         !disabled
           ? bgColorDefault[color]
-          : "bg-custom-gray cursor-not-allowed text-custom-white"
+          : "cursor-not-allowed bg-custom-light-gray text-custom-white"
       }`}
     >
       {/* Content */}
