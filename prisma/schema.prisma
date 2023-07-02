@@ -37,7 +37,7 @@ model User {
   password     String
   name         String
   age          Int
-  balance      Int
+  balance      Int           @default(0)
   transactions Transaction[]
   tickets      Ticket[]
 }

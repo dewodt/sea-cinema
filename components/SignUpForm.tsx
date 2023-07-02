@@ -3,10 +3,50 @@
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
 import Link from "next/link";
+import type { FormEvent } from "react";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Get form data
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+
+    // Check if form is empty
+    if (Object.values(data).some((value) => value === "")) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    // Form value is valid
+    try {
+      // loading toast
+      const toastId = toast.loading("Loading...");
+
+      // Send fetch request to server
+      const res = await fetch("/api/signup", {
+        body: formData,
+        method: "POST",
+      });
+      const resJSON = await res.json();
+
+      toast.dismiss(toastId);
+      // Check response ok
+      if (res.ok) {
+        toast.success(resJSON.message);
+        router.push("/signin");
+      } else {
+        toast.error(resJSON.error);
+      }
+    } catch (err) {
+      // Handle fetch error (connection issue)
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -19,16 +59,16 @@ const SignUpForm = () => {
         Sign Up
       </h1>
       {/* Name */}
-      <TextField type="text" placeholder="Name" />
+      <TextField name="name" type="text" placeholder="Name" />
 
       {/* Age */}
-      <TextField type="number" placeholder="Age" />
+      <TextField name="age" type="number" placeholder="Age" />
 
       {/* Username */}
-      <TextField type="text" placeholder="Username" />
+      <TextField name="username" type="text" placeholder="Username" />
 
       {/* Password */}
-      <TextField type="password" placeholder="Password" />
+      <TextField name="password" type="password" placeholder="Password" />
 
       {/* Submit */}
       <Button type="submit" color="red" paddingY="12px" fullWidth={true}>
