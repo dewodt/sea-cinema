@@ -59,12 +59,12 @@ const Balance = async () => {
             {/* Table Header */}
             <tr>
               <th className="border-2 border-custom-white px-3 py-2 font-bold xl:px-4 xl:py-3">
-                ID
+                Transaction ID
               </th>
-              <th className="border-2 border-custom-white px-3 py-2 font-bold xl:px-7 xl:py-3">
+              <th className="border-2 border-custom-white px-3 py-2 font-bold xl:px-4 xl:py-3">
                 Time
               </th>
-              <th className="border-2 border-custom-white px-3 py-2 font-bold xl:px-5 xl:py-3">
+              <th className="border-2 border-custom-white px-3 py-2 font-bold xl:px-4 xl:py-3">
                 Amount
               </th>
             </tr>
@@ -83,7 +83,7 @@ const Balance = async () => {
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
                     {id}
                   </td>
-                  <td className="border-2 border-custom-white px-3 py-2 xl:px-7 xl:py-3">
+                  <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
                     {new Date(time).toLocaleString("en-US", {
                       calendar: "long",
                       year: "numeric",
@@ -95,7 +95,7 @@ const Balance = async () => {
                     })}
                   </td>
                   <td
-                    className={`border-2 border-custom-white px-3 py-2 xl:px-5 xl:py-3 ${
+                    className={`border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3 ${
                       amount > 0 ? "text-custom-green" : "text-custom-light-red"
                     }`}
                   >
