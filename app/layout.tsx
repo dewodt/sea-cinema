@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { usePathname } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import NavBar from "@/components/NavBar";
@@ -14,6 +14,8 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+export const PopUpContext = createContext({});
+
 export default function RootLayout({
   children,
 }: {
@@ -23,25 +25,32 @@ export default function RootLayout({
   const [navBarExpand, setNavBarExpand] = useState(false);
   const pathname = usePathname();
 
+  // Popup state
+  const [popUp, setPopUp] = useState<undefined | React.ReactNode>(undefined);
+
   // Reset state when change route
   useEffect(() => {
     setNavBarExpand(false);
+    setPopUp(undefined);
   }, [pathname]);
 
   return (
     <html lang="en" className={inter.variable}>
       <body
         className={`flex min-h-screen flex-col bg-custom-soft-black ${
-          navBarExpand && "h-screen overflow-hidden"
+          (navBarExpand || popUp) && "h-screen overflow-hidden"
         }`}
       >
         <SessionProvider>
-          <NavBar
-            navBarExpand={navBarExpand}
-            setNavBarExpand={setNavBarExpand}
-          />
-          {children}
-          <CustomToaster />
+          <PopUpContext.Provider value={setPopUp}>
+            <NavBar
+              navBarExpand={navBarExpand}
+              setNavBarExpand={setNavBarExpand}
+            />
+            {children}
+            {popUp && <>{popUp}</>}
+            <CustomToaster />
+          </PopUpContext.Provider>
         </SessionProvider>
       </body>
     </html>
