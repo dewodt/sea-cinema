@@ -48,7 +48,7 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
   const timeToday00 = new Date().setHours(0, 0, 0, 0);
   const timeTomorrow00 = timeToday00 + 24 * 60 * 60 * 1000;
 
-  // At certain times, some schedules have passed so disable the button. 
+  // At certain times, some schedules have passed so disable the button.
   const scheduleToday = Array.from({ length: 4 }, (_, index) => {
     const hour = 12 + 3 * index;
     const timeTodayIndex = new Date().setHours(hour, 0, 0, 0);
@@ -104,7 +104,7 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
                 <h2 className="text-lg font-bold">
                   {new Date(timeToday00).toLocaleDateString("en-US")} (Today)
                 </h2>
-                <div className="flex flex-row flex-wrap gap-3 items-center">
+                <div className="flex flex-row flex-wrap items-center gap-3">
                   {scheduleToday.map((schedule, index) => {
                     if (schedule.buttonDisabled) {
                       return (
