@@ -68,19 +68,20 @@ const NavBar = ({
             navBarExpand ? "flex" : "hidden"
           } lg:static lg:flex lg:w-fit lg:flex-row lg:items-center lg:gap-8 lg:p-0`}
         >
-          {NavBarItems.map((item, index) => {
-            return (
-              <Link
-                className={`${
-                  pathname?.startsWith(item.href) && "text-custom-light-red"
-                }`}
-                key={index}
-                href={item.href}
-              >
-                <li className="p-2">{item.title}</li>
-              </Link>
-            );
-          })}
+          {session &&
+            NavBarItems.map((item, index) => {
+              return (
+                <Link
+                  className={`${
+                    pathname?.startsWith(item.href) && "text-custom-light-red"
+                  }`}
+                  key={index}
+                  href={item.href}
+                >
+                  <li className="p-2">{item.title}</li>
+                </Link>
+              );
+            })}
           <li className="flex flex-row items-center gap-4 self-center p-2 lg:p-0">
             <Button
               color="red"

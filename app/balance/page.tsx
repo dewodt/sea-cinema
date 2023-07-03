@@ -1,5 +1,8 @@
 import Button from "@/components/Button";
 import BalancePopUp from "@/components/BalancePopUp";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Balance | SEA Cinema",
@@ -7,6 +10,14 @@ export const metadata = {
 };
 
 const Balance = async () => {
+  // Get session data
+  const session = await getServerSession(authOptions);
+
+  // If not logged in, redirect to home
+  if (!session) {
+    redirect("/signin");
+  }
+
   // Test data
   const transactions = [
     {

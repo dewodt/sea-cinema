@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import BookForm from "@/components/BookForm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 export const generateMetadata = async ({
   params,
@@ -50,10 +53,16 @@ const MovieBook = async ({
 }: {
   params: { id: string; date: string };
 }) => {
+  // Get session data
+  const session = await getServerSession(authOptions);
+
+  // If not logged in, redirect to sign in
+  if (!session) {
+    redirect("/signin");
+  }
+
   // Get params
   const { id, date } = params;
-
-  // Check if session is available
 
   // Get movie data
   const movie = await prisma.movie.findUnique({
