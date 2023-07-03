@@ -3,6 +3,7 @@ import BalancePopUp from "@/components/BalancePopUp";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 export const metadata = {
   title: "Balance | SEA Cinema",
@@ -10,40 +11,35 @@ export const metadata = {
 };
 
 const Balance = async () => {
-  // Get session data
+  // Get session data, If not logged in, redirect to sign in
   const session = await getServerSession(authOptions);
-
-  // If not logged in, redirect to home
   if (!session) {
     redirect("/signin");
   }
+  const username = session.username;
 
-  // Test data
-  const transactions = [
-    {
-      id: 13204239848239428934,
-      time: "2023-07-01T03:53:36.000Z",
-      amount: -100000,
-    },
-    { id: 2, time: "2023-07-01T03:53:37.000Z", amount: +200000 },
-    { id: 3, time: "2023-07-01T03:53:38.000Z", amount: +300000 },
-    { id: 4, time: "2023-07-01T03:53:39.000Z", amount: -400000 },
-    { id: 5, time: "2023-07-01T03:53:40.000Z", amount: +500000 },
-    { id: 6, time: "2023-07-01T03:53:41.000Z", amount: -600000 },
-    { id: 7, time: "2023-07-01T03:53:42.000Z", amount: -700000 },
-    { id: 8, time: "2023-07-01T03:53:43.000Z", amount: +800000 },
-    { id: 9, time: "2023-07-01T03:53:44.000Z", amount: +900000 },
-    { id: 10, time: "2023-07-01T03:53:45.000Z", amount: +1000000 },
-  ];
+  // Get user's balance data (because session is valid, we can ensure that the user is exist)
+  const { balance } = (await prisma.user.findUnique({
+    where: { username: username },
+    select: { balance: true },
+  })) as { balance: number };
 
-  // Get user balance (useServerSession)
+  // Get user's transaction data
+  const transactions = await prisma.transaction.findMany({
+    orderBy: { time: "desc" },
+    where: { user: { username: username } },
+  });
 
   return (
     <main className="flex flex-auto justify-center px-5 py-10 font-inter text-custom-white xl:py-16">
       <section className="flex flex-col items-center gap-7">
         {/* Title */}
         <h1 className="text-center text-2xl font-bold xl:text-3xl">
-          My Balance: Rp 5000000
+          My Balance:{" "}
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(balance)}
         </h1>
 
         {/* Withdraw or Top Up */}
