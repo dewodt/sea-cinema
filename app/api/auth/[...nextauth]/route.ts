@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
         if (!user || user.password !== credentials?.password) {
           return null;
         }
-        
+
         // If username found and the password matches
         return user;
       },
