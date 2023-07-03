@@ -50,6 +50,7 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
               ? "Insert top up amount"
               : "Insert withdrawal amount"
           }
+          name={type === "topup" ? "topup" : "withdraw"}
           type="number"
         />
         <div className="flex w-full flex-row items-center gap-5">
