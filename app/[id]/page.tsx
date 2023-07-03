@@ -48,24 +48,24 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
   const timeToday00 = new Date().setHours(0, 0, 0, 0);
   const timeTomorrow00 = timeToday00 + 24 * 60 * 60 * 1000;
 
-  // Schedule
+  // At certain times, some schedules have passed so disable the button. 
   const scheduleToday = Array.from({ length: 4 }, (_, index) => {
     const hour = 12 + 3 * index;
     const timeTodayIndex = new Date().setHours(hour, 0, 0, 0);
     return {
       buttonText: `${hour}:00`,
-      buttonDisabled: timeNow > timeTodayIndex,
+      buttonDisabled: timeNow > timeTodayIndex, // Disable if time is passed
       buttonLink: `/${movie.id}/${timeTodayIndex}`,
     };
   });
 
+  // Tomorrow is always ahead of now, so it's always enabled.
   const scheduleTomorrow = Array.from({ length: 4 }, (_, index) => {
     const hour = 12 + 3 * index;
     const timeTomorrowIndex =
       new Date().setHours(hour, 0, 0, 0) + 24 * 60 * 60 * 1000;
     return {
       buttonText: `${hour}:00`,
-      buttonDisabled: timeNow > timeTomorrowIndex,
       buttonLink: `/${movie.id}/${timeTomorrowIndex}`,
     };
   });
@@ -104,11 +104,12 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
                 <h2 className="text-lg font-bold">
                   {new Date(timeToday00).toLocaleDateString("en-US")} (Today)
                 </h2>
-                <div className="flex flex-row flex-wrap gap-3">
+                <div className="flex flex-row flex-wrap gap-3 items-center">
                   {scheduleToday.map((schedule, index) => {
-                    return (
-                      <Link key={index} href={schedule.buttonLink}>
+                    if (schedule.buttonDisabled) {
+                      return (
                         <Button
+                          key={index}
                           color="trans-red"
                           paddingX="13px"
                           paddingY="10px"
@@ -116,8 +117,23 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
                         >
                           <span className="text-sm">{schedule.buttonText}</span>
                         </Button>
-                      </Link>
-                    );
+                      );
+                    } else {
+                      return (
+                        <Link key={index} href={schedule.buttonLink}>
+                          <Button
+                            color="trans-red"
+                            paddingX="13px"
+                            paddingY="10px"
+                            disabled={schedule.buttonDisabled}
+                          >
+                            <span className="text-sm">
+                              {schedule.buttonText}
+                            </span>
+                          </Button>
+                        </Link>
+                      );
+                    }
                   })}
                 </div>
               </div>
@@ -138,7 +154,6 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
                           color="trans-red"
                           paddingX="13px"
                           paddingY="10px"
-                          disabled={schedule.buttonDisabled}
                         >
                           <span className="text-sm">{schedule.buttonText}</span>
                         </Button>
