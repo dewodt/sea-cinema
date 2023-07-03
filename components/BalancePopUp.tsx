@@ -41,7 +41,7 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
     const formData = new FormData(e.target as HTMLFormElement);
     const amount = parseInt(formData.get("amount") as string);
 
-    // Error when
+    // Validate withdrawal limit, Error when
     // Input empty parseInt will return Nan
     // Input <= 0
     if (!amount || amount <= 0) {
@@ -55,15 +55,16 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
 
       // Send data to API Endpoint
       const res = await fetch("/api/topup", { body: formData, method: "POST" });
-      toast.dismiss(toastId);
+      const resJSON = await res.json();
 
+      toast.dismiss(toastId);
       if (res.ok) {
         // Topup success
-        toast.success("Top up success!");
+        toast.success(resJSON.message);
         router.refresh();
       } else {
         // Topup failed
-        toast.error("Top up failed!");
+        toast.error(resJSON.message);
       }
     } catch {
       // Network error
@@ -72,7 +73,46 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
   };
 
   // Withdraw
-  const handleSubmitWithdraw = async () => {};
+  const handleSubmitWithdraw = async (e: FormEvent) => {
+    e.preventDefault();
+
+    // Get topup amount
+    const formData = new FormData(e.target as HTMLFormElement);
+    const amount = parseInt(formData.get("amount") as string) * -1;
+
+    // Validate withdrawal limit, Error when
+    // Input empty or strings parseInt will return Nan
+    // amount >= 0 or amount > -500000
+    if (!amount || amount >= 0 || amount < -500000) {
+      toast.error("Please fill the amount correctly!");
+      return;
+    }
+
+    try {
+      setPopUp(undefined);
+      const toastId = toast.loading("Loading...");
+
+      // Send data to API Endpoint
+      const res = await fetch("/api/withdraw", {
+        body: formData,
+        method: "POST",
+      });
+      const resJSON = await res.json();
+
+      toast.dismiss(toastId);
+      if (res.ok) {
+        // Topup success
+        toast.success(resJSON.message);
+        router.refresh();
+      } else {
+        // Topup failed
+        toast.error(resJSON.message);
+      }
+    } catch {
+      // Network error
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-40 flex h-full w-full cursor-pointer items-center justify-center bg-black bg-opacity-50">

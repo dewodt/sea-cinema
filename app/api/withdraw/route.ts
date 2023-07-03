@@ -26,25 +26,36 @@ export const POST = async (req: NextRequest) => {
   }
   const username = session.username;
 
-  // Get data from request body
-  const formData = await req.formData();
-  const amount = parseInt(formData.get("amount") as string);
+  // Get user's balance
+  const { balance } = (await prisma.user.findUnique({
+    where: { username: username },
+    select: { balance: true },
+  })) as { balance: number };
 
-  // Non number will return Nan from parseInt
+  // Get user's input
+  const formData = await req.formData();
+  const amount = parseInt(formData.get("amount") as string) * -1;
+
+  // Input empty or strings parseInt will return NaN
   if (!amount) {
     return NextResponse.json(
-      { error: "Bad Request", message: "Top up input should be a number!" },
+      { error: "Bad Request", message: "Withdrawal input should be a number!" },
       { status: 400 }
     );
   }
 
-  // Negative number input
-  if (amount <= 0) {
+  // If input is number but outside the limit
+  if (amount >= 0 || amount < -500000) {
     return NextResponse.json(
-      {
-        error: "Bad Request",
-        message: "Top up amount should be larger than 0!",
-      },
+      { error: "Bad Request", message: "Withdrawal amount beyond the limit!" },
+      { status: 400 }
+    );
+  }
+
+  // If balance is not enough
+  if (balance + amount < 0) {
+    return NextResponse.json(
+      { error: "Bad Request", message: "Your balance is not enough!" },
       { status: 400 }
     );
   }
@@ -68,5 +79,8 @@ export const POST = async (req: NextRequest) => {
   });
 
   // Success response
-  return NextResponse.json({ message: "Top up successfull" }, { status: 200 });
+  return NextResponse.json(
+    { message: "Withdrawal successfull" },
+    { status: 200 }
+  );
 };
