@@ -1,8 +1,8 @@
-import Button from "@/components/Button";
-import TicketsPopUp from "@/components/TicketsPopUp";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import CancelBookButton from "@/components/CancelBookButton";
 
 export const metadata = {
   title: "Tickets | SEA Cinema",
@@ -12,77 +12,17 @@ export const metadata = {
 const Tickets = async () => {
   // Get session data
   const session = await getServerSession(authOptions);
-
   // If not logged in, redirect to home
   if (!session) {
     redirect("/signin");
   }
+  const userId = session.id;
 
-  // Test data
-  const tickets = [
-    {
-      id: "123456789012345",
-      time: "2023-08-01T03:53:36.000Z",
-      seatnumber: 1,
-      moviename: "The Matrix",
-    },
-    {
-      id: "234567890123456",
-      time: "2023-07-01T03:53:37.000Z",
-      seatnumber: 2,
-      moviename: "The Lion King",
-    },
-    {
-      id: "345678901234567",
-      time: "2023-07-01T03:53:38.000Z",
-      seatnumber: 3,
-      moviename: "The Godfather",
-    },
-    {
-      id: "456789012345678",
-      time: "2023-07-01T03:53:39.000Z",
-      seatnumber: 4,
-      moviename: "The Shawshank Redemption",
-    },
-    {
-      id: "567890123456789",
-      time: "2023-07-01T03:53:40.000Z",
-      seatnumber: 5,
-      moviename: "The Dark Knight",
-    },
-    {
-      id: "678901234567890",
-      time: "2023-07-01T03:53:41.000Z",
-      seatnumber: 6,
-      moviename: "Forrest Gump",
-    },
-    {
-      id: "789012345678901",
-      time: "2023-07-01T03:53:42.000Z",
-      seatnumber: 7,
-      moviename: "The Silence of the Lambs",
-    },
-    {
-      id: "890123456789012",
-      time: "2023-07-01T03:53:43.000Z",
-      seatnumber: 8,
-      moviename: "Pulp Fiction",
-    },
-    {
-      id: "901234567890123",
-      time: "2023-07-01T03:53:44.000Z",
-      seatnumber: 9,
-      moviename: "The Lord of the Rings",
-    },
-    {
-      id: "012345678901234",
-      time: "2023-07-01T03:53:45.000Z",
-      seatnumber: 10,
-      moviename: "Star Wars",
-    },
-  ];
-
-  // Get user balance (useServerSession)
+  const tickets = await prisma.ticket.findMany({
+    where: { userId: userId },
+    orderBy: { dateTimeStart: "desc" },
+    include: { movie: { select: { title: true } } },
+  });
 
   return (
     <main className="flex flex-auto justify-center px-5 py-10 font-inter text-custom-white xl:py-16">
@@ -116,46 +56,39 @@ const Tickets = async () => {
 
             {/* Table Content */}
             {tickets.map((ticket) => {
-              const id = ticket.id;
-              const date = new Date(ticket.time).toLocaleString("en-US", {
-                calendar: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
-              });
-              const seat = ticket.seatnumber;
-              const title = ticket.moviename;
               return (
-                <tr key={id}>
+                <tr key={ticket.id}>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
-                    {id}
+                    {ticket.id}
                   </td>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
-                    {date}
+                    {ticket.dateTimeStart.toLocaleString("en-US", {
+                      calendar: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}
                   </td>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
-                    {seat}
+                    {ticket.seatNumber}
                   </td>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
-                    {title}
+                    {ticket.movie.title}
                   </td>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
-                    {Date.now() < new Date(ticket.time).getTime() ? (
-                      <Button
-                        paddingY="10px"
-                        paddingX="15px"
-                        color="trans-red"
-                        popUp={
-                          <TicketsPopUp date={date} seat={seat} title={title} />
-                        }
-                      >
-                        Cancel
-                      </Button>
+                    {Date.now() < ticket.dateTimeStart.getTime() ? (
+                      // Client component to handle disable while loading.
+                      <CancelBookButton
+                        id={ticket.id}
+                        date={ticket.dateTimeStart}
+                        seat={ticket.seatNumber}
+                        title={ticket.movie.title}
+                      />
                     ) : (
-                      "-"
+                      "Expired"
                     )}
                   </td>
                 </tr>
