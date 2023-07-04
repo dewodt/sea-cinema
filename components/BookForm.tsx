@@ -20,7 +20,7 @@ const BookForm = ({
   id: string;
   title: string;
   price: number;
-  date: string;
+  date: Date;
   soldSeats: Array<number>;
 }) => {
   // Store selected seats
@@ -33,7 +33,7 @@ const BookForm = ({
   // Get setPopUp
   const setPopUp = useContext(PopUpContext) as PopUpContextType;
 
-  const formattedDate = new Date(parseInt(date)).toLocaleString("en-US", {
+  const formattedDate = date.toLocaleString("en-US", {
     calendar: "long",
     year: "numeric",
     month: "long",

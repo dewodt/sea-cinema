@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 export const generateMetadata = async ({
   params,
 }: {
-  params: { id: string; date: string };
+  params: { id: string; time: string };
 }): Promise<Metadata> => {
   // Get params
-  const { id, date } = params;
+  const { id, time } = params;
 
   // Get movie data
   const movie = await prisma.movie.findUnique({ where: { id: id } });
@@ -38,7 +38,7 @@ export const generateMetadata = async ({
   }
 
   // If no movie is found
-  if (!availableSchedule.includes(parseInt(date)) || !movie) {
+  if (!availableSchedule.includes(parseInt(time)) || !movie) {
     return {
       title: `Error 404 | SEA Cinema`,
       description: "Page is not found",
@@ -54,7 +54,7 @@ export const generateMetadata = async ({
 const MovieBook = async ({
   params,
 }: {
-  params: { id: string; date: string };
+  params: { id: string; time: string };
 }) => {
   // Get session data
   const session = await getServerSession(authOptions);
@@ -65,7 +65,7 @@ const MovieBook = async ({
   }
 
   // Get params
-  const { id, date } = params;
+  const { id, time } = params;
 
   // Get movie data
   const movie = await prisma.movie.findUnique({
@@ -94,7 +94,7 @@ const MovieBook = async ({
   }
 
   // Check if date is not available schedule or if movie is not found
-  if (!availableSchedule.includes(parseInt(date)) || !movie) {
+  if (!availableSchedule.includes(parseInt(time)) || !movie) {
     return notFound();
   }
 
@@ -102,7 +102,7 @@ const MovieBook = async ({
   const soldSeatObjects = await prisma.ticket.findMany({
     where: {
       movieId: id,
-      dateTimeStart: new Date(parseInt(date)),
+      dateTimeStart: new Date(parseInt(time)),
     },
     select: {
       seatNumber: true,
@@ -116,7 +116,7 @@ const MovieBook = async ({
         id={id}
         title={movie.title}
         price={movie.ticketPrice}
-        date={date}
+        date={new Date(parseInt(time))}
         soldSeats={soldSeats}
       />
     </main>

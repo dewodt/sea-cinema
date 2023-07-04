@@ -29,8 +29,8 @@ export const POST = async (req: NextRequest) => {
   // Get form data
   const formData = await req.formData();
   const id = formData.get("id") as string; // movie id
-  const time = parseInt(formData.get("date") as string); // movie start time
-  const date = new Date(time);
+  const date = new Date(formData.get("date") as string); // movie start date
+  const time = date.getTime(); // movie start time
   const seats = (formData.get("seats") as string)
     .split(",")
     .map((seat) => parseInt(seat));

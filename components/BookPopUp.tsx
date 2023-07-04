@@ -17,7 +17,7 @@ const BookPopUp = ({
 }: {
   title: string;
   id: string;
-  date: string;
+  date: Date;
   seats: number[];
   setLoading: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -52,7 +52,7 @@ const BookPopUp = ({
     // Create form data
     const formData = new FormData();
     formData.append("id", id);
-    formData.append("date", date);
+    formData.append("date", date.toISOString());
     formData.append("seats", seats.toString());
 
     setLoading(true); // setLoading to false only if fail
@@ -81,7 +81,7 @@ const BookPopUp = ({
     }
   };
 
-  const formattedDate = new Date(parseInt(date)).toLocaleString("en-US", {
+  const formattedDate = date.toLocaleString("en-US", {
     calendar: "long",
     year: "numeric",
     month: "long",
