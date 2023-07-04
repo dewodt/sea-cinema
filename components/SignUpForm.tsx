@@ -41,7 +41,7 @@ const SignUpForm = () => {
         toast.success(resJSON.message);
         router.push("/signin");
       } else {
-        toast.error(resJSON.error);
+        toast.error(resJSON.message);
       }
     } catch (err) {
       // Handle fetch error (connection issue)

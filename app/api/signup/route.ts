@@ -18,7 +18,7 @@ export const POST = async (req: NextRequest) => {
   // Validate each fields
   if (!name || !username || !age || !password) {
     return NextResponse.json(
-      { error: "All fields are required" },
+      { error: "Bad Request", message: "All fields are required" },
       { status: 400 }
     );
   }
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
 
   if (user) {
     return NextResponse.json(
-      { error: "Username already exists" },
+      { error: "Bad Request", message: "Username already exists" },
       { status: 400 }
     );
   }

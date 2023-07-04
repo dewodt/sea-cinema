@@ -91,7 +91,7 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(
       {
         error: "Bad Request",
-        message: "A / Some seat(s) number is invalid",
+        message: "Seat(s) number is invalid",
       },
       { status: 400 }
     );

@@ -57,7 +57,7 @@ export const POST = async (req: NextRequest) => {
   });
 
   return NextResponse.json(
-    { message: "Withdrawal ticket success" },
+    { message: "Cancel ticket success" },
     { status: 200 }
   );
 };
