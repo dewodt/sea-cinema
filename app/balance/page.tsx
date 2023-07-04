@@ -85,6 +85,7 @@ const Balance = async () => {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
+                      timeZone: "Asia/Jakarta",
                     })}
                   </td>
                   <td

@@ -90,6 +90,7 @@ const CancelPopUp = ({
     hour: "numeric",
     minute: "numeric",
     hour12: true,
+    timeZone: "Asia/Jakarta",
   });
 
   return (

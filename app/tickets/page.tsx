@@ -70,6 +70,7 @@ const Tickets = async () => {
                       hour: "numeric",
                       minute: "numeric",
                       hour12: true,
+                      timeZone: "Asia/Jakarta",
                     })}
                   </td>
                   <td className="border-2 border-custom-white px-3 py-2 xl:px-4 xl:py-3">
