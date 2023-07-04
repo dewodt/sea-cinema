@@ -3,8 +3,8 @@ import Cards from "@/components/Cards";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Beranda | SEA Cinema",
-  description: "Halaman Beranda SEA Cinema",
+  title: "Home | SEA Cinema",
+  description: "Home page of SEA Cinema",
 };
 
 const Home = async () => {
@@ -14,7 +14,7 @@ const Home = async () => {
   return (
     <main className="flex flex-auto flex-col items-center gap-8 px-5 py-10 lg:gap-10 xl:gap-12 xl:py-20 2xl:gap-14">
       <h1 className="text-center font-inter text-4xl font-bold text-custom-light-red xl:text-5xl">
-        Film Tayang
+        Now Playing
       </h1>
       <div className="grid w-fit grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:gap-12 2xl:grid-cols-4 2xl:gap-14">
         {movies.map((movie) => {
