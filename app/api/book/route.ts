@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest) => {
       { status: 401 }
     );
   }
-  const username = session.username;
+  const { username, age } = session;
 
   // Get form data
   const formData = await req.formData();
@@ -43,7 +43,18 @@ export const POST = async (req: NextRequest) => {
       { status: 400 }
     );
   }
-  const { ticketPrice } = movie;
+  const { ticketPrice, ageRating } = movie;
+
+  // Check if user's age is allowed to watch or no
+  if (age < ageRating) {
+    return NextResponse.json(
+      {
+        error: "Unathorized Request",
+        message: "Your age is not old enough!",
+      },
+      { status: 401 }
+    );
+  }
 
   // Check if schedule exist / valid
   // ASSUMPTIONS: ALL SCHEDULE IS IN INDONESIAN WIB TIME.
