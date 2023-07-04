@@ -7,9 +7,11 @@ import type { FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const SignInForm = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,6 +30,7 @@ const SignInForm = () => {
 
     // Send fetch request to nextauth sign in end point
     try {
+      setLoading(true);
       const toastId = toast.loading("Loading...");
       const res = await signIn("credentials", {
         username: username,
@@ -37,6 +40,7 @@ const SignInForm = () => {
       toast.dismiss(toastId);
       if (!res || res.error) {
         // If no response or response is error
+        setLoading(false);
         toast.error("Invalid username or password");
       } else {
         // If response success
@@ -44,6 +48,7 @@ const SignInForm = () => {
         router.push("/");
       }
     } catch (error) {
+      setLoading(false);
       toast.error("Something went wrong");
     }
   };
@@ -64,7 +69,13 @@ const SignInForm = () => {
       <TextField name="password" type="password" placeholder="Password" />
 
       {/* Submit */}
-      <Button type="submit" color="red" paddingY="12px" fullWidth={true}>
+      <Button
+        disabled={loading}
+        type="submit"
+        color="red"
+        paddingY="12px"
+        fullWidth={true}
+      >
         Submit
       </Button>
 

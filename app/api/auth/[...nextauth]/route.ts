@@ -3,6 +3,7 @@ import type { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import bcrypt from "bcrypt";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -18,12 +19,23 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials) {
+        // Return object (found) or null (notfound)
         const user = await prisma.user.findUnique({
           where: { username: credentials?.username },
         });
 
-        // If user is not found or password is wrong
-        if (!user || user.password !== credentials?.password) {
+        // If username not found
+        if (!user) {
+          return null;
+        }
+
+        const isMatch = await bcrypt.compare(
+          credentials?.password as string,
+          user.password
+        );
+
+        // If username found but password doesn't match
+        if (!isMatch) {
           return null;
         }
 

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export const POST = async (req: NextRequest) => {
   // Check method req
@@ -36,8 +37,16 @@ export const POST = async (req: NextRequest) => {
   }
 
   // If username doesn't exist, create a new user
+  // Create hashing
+  const hashedPassword = await bcrypt.hash(password, 10);
+  // Update DB
   await prisma.user.create({
-    data: { name: name, age: age, username: username, password: password },
+    data: {
+      name: name,
+      age: age,
+      username: username,
+      password: hashedPassword,
+    },
   });
 
   return NextResponse.json({ message: "Sign up successfull" }, { status: 200 });

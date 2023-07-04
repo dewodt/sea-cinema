@@ -5,10 +5,12 @@ import TextField from "@/components/TextField";
 import Link from "next/link";
 import type { FormEvent } from "react";
 import { toast } from "react-hot-toast";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,7 @@ const SignUpForm = () => {
     // Form value is valid
     try {
       // loading toast
+      setLoading(true);
       const toastId = toast.loading("Loading...");
 
       // Send fetch request to server
@@ -41,10 +44,12 @@ const SignUpForm = () => {
         toast.success(resJSON.message);
         router.push("/signin");
       } else {
+        setLoading(false);
         toast.error(resJSON.message);
       }
     } catch (err) {
       // Handle fetch error (connection issue)
+      setLoading(false);
       toast.error("Something went wrong");
     }
   };
@@ -71,7 +76,13 @@ const SignUpForm = () => {
       <TextField name="password" type="password" placeholder="Password" />
 
       {/* Submit */}
-      <Button type="submit" color="red" paddingY="12px" fullWidth={true}>
+      <Button
+        disabled={loading}
+        type="submit"
+        color="red"
+        paddingY="12px"
+        fullWidth={true}
+      >
         Submit
       </Button>
 
