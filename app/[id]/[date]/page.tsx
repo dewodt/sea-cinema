@@ -17,21 +17,24 @@ export const generateMetadata = async ({
   // Get movie data
   const movie = await prisma.movie.findUnique({ where: { id: id } });
 
-  // Available schedule (n times Today and 4x Tomorrow, 0 <= n <= 4 times because depends on the time of today)
+  // Check if schedule exist / valid
+  // ASSUMPTIONS: ALL SCHEDULE IS IN INDONESIAN WIB TIME.
+  // Schedule time WIB: 12:00, 15:00, 18:00, 21:00
+  // Schedule time UTC: 5:00, 8:00, 11:00, 14:00
   const availableSchedule = [];
   for (let i = 0; i < 4; i++) {
-    const hour = 12 + 3 * i;
-    const timeTodayIndex = new Date().setHours(hour, 0, 0, 0);
+    const utcHour = 12 + 3 * i - 7;
+    const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
     const timeTomorrowIndex = timeTodayIndex + 24 * 60 * 60 * 1000;
     const timeNow = Date.now();
 
-    // Add to available schedule if schedule is not passed
+    // Check if schedule is passed
     if (timeNow < timeTodayIndex) {
       availableSchedule.push(timeTodayIndex);
     }
 
     // Tomorrow is no doubt available
-    availableSchedule.push(timeTodayIndex, timeTomorrowIndex);
+    availableSchedule.push(timeTomorrowIndex);
   }
 
   // If no movie is found
@@ -70,11 +73,14 @@ const MovieBook = async ({
     select: { title: true, ticketPrice: true },
   });
 
-  // Available schedule (n times Today and 4x Tomorrow, 0 <= n <= 4 times because depends on the time of today)
+  // Check if schedule exist / valid
+  // ASSUMPTIONS: ALL SCHEDULE IS IN INDONESIAN WIB TIME.
+  // Schedule time WIB: 12:00, 15:00, 18:00, 21:00
+  // Schedule time UTC: 5:00, 8:00, 11:00, 14:00
   const availableSchedule = [];
   for (let i = 0; i < 4; i++) {
-    const hour = 12 + 3 * i;
-    const timeTodayIndex = new Date().setHours(hour, 0, 0, 0);
+    const utcHour = 12 + 3 * i - 7;
+    const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
     const timeTomorrowIndex = timeTodayIndex + 24 * 60 * 60 * 1000;
     const timeNow = Date.now();
 
@@ -107,6 +113,7 @@ const MovieBook = async ({
   return (
     <main className="flex flex-auto justify-center px-5 py-10 xl:py-16">
       <BookForm
+        id={id}
         title={movie.title}
         price={movie.ticketPrice}
         date={date}

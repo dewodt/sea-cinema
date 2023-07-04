@@ -1,22 +1,48 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Button from "./Button";
 import Seat from "./Seat";
+import BookPopUp from "./BookPopUp";
+import { useRouter } from "next/navigation";
+import { PopUpContext } from "@/app/layout";
+import type { PopUpContextType } from "@/types/components";
+import { toast } from "react-hot-toast";
 
 const BookForm = ({
+  id,
   title,
   price,
   date,
   soldSeats,
 }: {
+  id: string;
   title: string;
   price: number;
   date: string;
   soldSeats: Array<number>;
 }) => {
+  // Store selected seats
   const [selectedSeats, setSelectedSeats] = useState<Array<number>>([]);
+
+  // Loading state to disable cancel/submit button.
+  const [loading, setLoading] = useState(false);
+  const router = useRouter(); // Use router for cancel button to prevent remount (Without using useRouter, a remount will occured: one with link and one without link)
+
+  // Get setPopUp
+  const setPopUp = useContext(PopUpContext) as PopUpContextType;
+
+  const formattedDate = new Date(parseInt(date)).toLocaleString("en-US", {
+    calendar: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
   return (
     <form className="flex h-fit w-full max-w-xl flex-col items-start gap-5 font-inter text-custom-white xl:max-w-2xl xl:gap-7">
       {/* Explain icon meaning div */}
@@ -64,18 +90,7 @@ const BookForm = ({
             Seats: {selectedSeats.length !== 0 ? selectedSeats.join(", ") : "-"}
           </li>
           <li>Tickets: {selectedSeats.length}/6</li>
-          <li>
-            Date:{" "}
-            {new Date(parseInt(date)).toLocaleString("en-US", {
-              calendar: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-            })}
-          </li>
+          <li>Date: {formattedDate}</li>
           <li>
             Total Payment:{" "}
             {new Intl.NumberFormat("id-ID", {
@@ -107,15 +122,32 @@ const BookForm = ({
 
       {/* Confirm / Cancel order div */}
       <section className="flex w-full max-w-[308px] flex-row items-center gap-5 self-center xl:max-w-[336px] xl:gap-6">
-        {/* Disable all button when sending form */}
-        {/* Disable submit button when 0 seats */}
-        <Button color="trans-red" fullWidth={true}>
+        <Button
+          color="trans-red"
+          fullWidth={true}
+          disabled={loading}
+          onClick={!loading ? () => router.push(`/${id}`) : () => {}}
+        >
           Cancel
         </Button>
         <Button
           color="red"
           fullWidth={true}
-          disabled={selectedSeats.length === 0}
+          disabled={loading}
+          onClick={
+            selectedSeats.length === 0
+              ? () => toast.error("Pick atleast one seat!")
+              : () =>
+                  setPopUp(
+                    <BookPopUp
+                      id={id}
+                      date={date}
+                      seats={selectedSeats}
+                      title={title}
+                      setLoading={setLoading}
+                    />
+                  )
+          }
         >
           Confirm
         </Button>

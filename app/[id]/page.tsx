@@ -5,12 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
 
-export const generateStaticParams = async () => {
-  const movies = await prisma.movie.findMany();
-
-  return movies.map((movie) => ({ id: movie.id }));
-};
-
 export const generateMetadata = async ({
   params,
 }: {
@@ -43,15 +37,19 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
   }
 
   // Get times
+  // ASSUMPTIONS: ALL SCHEDULE IS IN INDONESIAN WIB TIME.
+  // Schedule time WIB: 12:00, 15:00, 18:00, 21:00
+  // Schedule time UTC: 5:00, 8:00, 11:00, 14:00
   const timeNow = new Date().getTime();
   const timeRelease = movie.releaseDate.getTime();
-  const timeToday00 = new Date().setHours(0, 0, 0, 0);
+  const timeToday00 = new Date().setUTCHours(-7, 0, 0, 0);
   const timeTomorrow00 = timeToday00 + 24 * 60 * 60 * 1000;
 
   // At certain times, some schedules have passed so disable the button.
   const scheduleToday = Array.from({ length: 4 }, (_, index) => {
-    const hour = 12 + 3 * index;
-    const timeTodayIndex = new Date().setHours(hour, 0, 0, 0);
+    const hour = 12 + 3 * index
+    const utcHour = hour - 7;
+    const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
     return {
       buttonText: `${hour}:00`,
       buttonDisabled: timeNow > timeTodayIndex, // Disable if time is passed
@@ -61,9 +59,10 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
 
   // Tomorrow is always ahead of now, so it's always enabled.
   const scheduleTomorrow = Array.from({ length: 4 }, (_, index) => {
-    const hour = 12 + 3 * index;
+    const hour = 12 + 3 * index
+    const utcHour = hour - 7;
     const timeTomorrowIndex =
-      new Date().setHours(hour, 0, 0, 0) + 24 * 60 * 60 * 1000;
+      new Date().setUTCHours(utcHour, 0, 0, 0) + 24 * 60 * 60 * 1000;
     return {
       buttonText: `${hour}:00`,
       buttonLink: `/${movie.id}/${timeTomorrowIndex}`,
