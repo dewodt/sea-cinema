@@ -47,7 +47,7 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
 
   // At certain times, some schedules have passed so disable the button.
   const scheduleToday = Array.from({ length: 4 }, (_, index) => {
-    const hour = 12 + 3 * index
+    const hour = 12 + 3 * index;
     const utcHour = hour - 7;
     const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
     return {
@@ -59,7 +59,7 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
 
   // Tomorrow is always ahead of now, so it's always enabled.
   const scheduleTomorrow = Array.from({ length: 4 }, (_, index) => {
-    const hour = 12 + 3 * index
+    const hour = 12 + 3 * index;
     const utcHour = hour - 7;
     const timeTomorrowIndex =
       new Date().setUTCHours(utcHour, 0, 0, 0) + 24 * 60 * 60 * 1000;
