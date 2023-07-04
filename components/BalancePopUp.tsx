@@ -8,7 +8,15 @@ import Button from "./Button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
+import type { Dispatch, SetStateAction } from "react";
+
+const BalancePopUp = ({
+  type,
+  setLoading,
+}: {
+  type: "withdraw" | "topup";
+  setLoading: Dispatch<SetStateAction<boolean>>;
+}) => {
   const router = useRouter();
 
   // Get setPopUp
@@ -49,15 +57,16 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
       return;
     }
 
+    setPopUp(undefined);
+    setLoading(true);
+    const toastId = toast.loading("Loading...");
     try {
-      setPopUp(undefined);
-      const toastId = toast.loading("Loading...");
-
       // Send data to API Endpoint
       const res = await fetch("/api/topup", { body: formData, method: "POST" });
       const resJSON = await res.json();
 
       toast.dismiss(toastId);
+      setLoading(false);
       if (res.ok) {
         // Topup success
         toast.success(resJSON.message);
@@ -68,6 +77,8 @@ const BalancePopUp = ({ type }: { type: "withdraw" | "topup" }) => {
       }
     } catch {
       // Network error
+      toast.dismiss(toastId);
+      setLoading(false);
       toast.error("Something went wrong");
     }
   };

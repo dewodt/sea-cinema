@@ -1,9 +1,8 @@
-import Button from "@/components/Button";
-import BalancePopUp from "@/components/BalancePopUp";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import BalanceButtons from "@/components/BalanceButtons";
 
 export const metadata = {
   title: "Balance | SEA Cinema",
@@ -44,20 +43,7 @@ const Balance = async () => {
 
         {/* Withdraw or Top Up */}
         <div className="flex w-full max-w-xs flex-row items-center gap-5">
-          <Button
-            popUp={<BalancePopUp type="withdraw" />}
-            fullWidth={true}
-            color="trans-red"
-          >
-            Withdraw
-          </Button>
-          <Button
-            popUp={<BalancePopUp type="topup" />}
-            fullWidth={true}
-            color="red"
-          >
-            Top Up
-          </Button>
+          <BalanceButtons />
         </div>
 
         {/* Tables */}
