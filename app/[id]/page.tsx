@@ -5,28 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
 
-export const generateMetadata = async ({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> => {
-  const { id } = params;
-  const movie = await prisma.movie.findUnique({ where: { id: id } });
-
-  // If no movie is found
-  if (!movie) {
-    return {
-      title: `Error 404 | SEA Cinema`,
-      description: "Page is not found",
-    };
-  }
-
-  return {
-    title: `${movie.title} | SEA Cinema`,
-    description: `${movie.description}`,
-  };
-};
-
 const MovieDetail = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const movie = await prisma.movie.findUnique({ where: { id: id } });
@@ -193,3 +171,57 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
 };
 
 export default MovieDetail;
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> => {
+  const { id } = params;
+  const movie = await prisma.movie.findUnique({ where: { id: id } });
+
+  // If no movie is found
+  if (!movie) {
+    return {
+      title: `Error 404 | SEA Cinema`,
+      description: "Page is not found",
+    };
+  }
+
+  return {
+    title: `${movie.title} | SEA Cinema`,
+    description: `${movie.description}`,
+    generator: "Next.js",
+    applicationName: "SEA Cinema",
+    colorScheme: "dark",
+    openGraph: {
+      title: `${movie.title} | SEA Cinema`,
+      description: `${movie.description}`,
+      url: "https://cinema.dewodt.com",
+      siteName: "SEA Cinema",
+      images: [
+        {
+          url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+          width: 1200,
+          height: 630,
+          alt: "SEA Cinema",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${movie.title} | SEA Cinema`,
+      description: `${movie.description}`,
+      images: [
+        {
+          url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+          width: 1200,
+          height: 630,
+          alt: "SEA Cinema",
+        },
+      ],
+    },
+  };
+};

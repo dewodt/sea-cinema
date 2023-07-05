@@ -3,11 +3,7 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import BalanceButtons from "@/components/BalanceButtons";
-
-export const metadata = {
-  title: "Balance | SEA Cinema",
-  description: "User's balance page SEA Cinema",
-};
+import type { Metadata } from "next";
 
 const Balance = async () => {
   // Get session data, If not logged in, redirect to sign in
@@ -106,3 +102,40 @@ const Balance = async () => {
 };
 
 export default Balance;
+
+export const metadata: Metadata = {
+  title: "Balance | SEA Cinema",
+  description: "User's balance page SEA Cinema",
+  generator: "Next.js",
+  applicationName: "SEA Cinema",
+  colorScheme: "dark",
+  openGraph: {
+    title: "Balance | SEA Cinema",
+    description: "User's balance page SEA Cinema",
+    url: "https://cinema.dewodt.com",
+    siteName: "SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Balance | SEA Cinema",
+    description: "User's balance page SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+  },
+};

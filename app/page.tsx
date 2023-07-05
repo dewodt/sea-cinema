@@ -2,11 +2,6 @@ import type { Metadata } from "next";
 import Cards from "@/components/Cards";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = {
-  title: "Home | SEA Cinema",
-  description: "Home page of SEA Cinema",
-};
-
 const Home = async () => {
   // Get all movies
   const movies = await prisma.movie.findMany();
@@ -34,3 +29,40 @@ const Home = async () => {
 };
 
 export default Home;
+
+export const metadata: Metadata = {
+  title: "SEA Cinema",
+  description: "Home page of SEA Cinema",
+  generator: "Next.js",
+  applicationName: "SEA Cinema",
+  colorScheme: "dark",
+  openGraph: {
+    title: "SEA Cinema",
+    description: "Home page of SEA Cinema",
+    url: "https://cinema.dewodt.com",
+    siteName: "SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SEA Cinema",
+    description: "Home page of SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+  },
+};

@@ -3,11 +3,7 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CancelBookButton from "@/components/CancelBookButton";
-
-export const metadata = {
-  title: "Tickets | SEA Cinema",
-  description: "User's tickets page SEA Cinema",
-};
+import type { Metadata } from "next";
 
 const Tickets = async () => {
   // Get session data
@@ -103,3 +99,40 @@ const Tickets = async () => {
 };
 
 export default Tickets;
+
+export const metadata: Metadata = {
+  title: "Tickets | SEA Cinema",
+  description: "User's tickets page SEA Cinema",
+  generator: "Next.js",
+  applicationName: "SEA Cinema",
+  colorScheme: "dark",
+  openGraph: {
+    title: "Tickets | SEA Cinema",
+    description: "User's tickets page SEA Cinema",
+    url: "https://cinema.dewodt.com",
+    siteName: "SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tickets | SEA Cinema",
+    description: "User's tickets page SEA Cinema",
+    images: [
+      {
+        url: "https://cinema.dewodt.com/sea-cinema-link-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "SEA Cinema",
+      },
+    ],
+  },
+};
