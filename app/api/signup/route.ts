@@ -13,13 +13,22 @@ export const POST = async (req: NextRequest) => {
   const formData = await req.formData();
   const name = formData.get("name") as string;
   const username = formData.get("username") as string;
-  const age = parseInt(formData.get("age") as string);
+  const ageString = formData.get("age") as string;
+  const age = parseInt(ageString);
   const password = formData.get("password") as string;
 
-  // Validate each fields
-  if (!name || !username || !age || !password) {
+  // Make sure each field is not empty
+  if (!name || !username || !ageString || !password) {
     return NextResponse.json(
       { error: "Bad Request", message: "All fields are required" },
+      { status: 400 }
+    );
+  }
+
+  // If age is not a number or out of range.
+  if (isNaN(age) || age <= 0) {
+    return NextResponse.json(
+      { error: "Bad Request", message: "Age is not valid!" },
       { status: 400 }
     );
   }
