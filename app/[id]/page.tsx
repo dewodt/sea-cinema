@@ -101,7 +101,10 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
             {timeToday00 >= timeRelease && (
               <div className="flex flex-col gap-2">
                 <h2 className="text-lg font-bold">
-                  {new Date(timeToday00).toLocaleDateString("en-US")} (Today)
+                  {new Date(timeToday00).toLocaleDateString("en-US", {
+                    timeZone: "Asia/Jakarta",
+                  })}{" "}
+                  (Today)
                 </h2>
                 <div className="flex flex-row flex-wrap items-center gap-3">
                   {scheduleToday.map((schedule, index) => {
@@ -142,7 +145,9 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
             {timeTomorrow00 >= timeRelease && (
               <div className="flex flex-col gap-2">
                 <h2 className="text-lg font-bold">
-                  {new Date(timeTomorrow00).toLocaleDateString("en-US")}{" "}
+                  {new Date(timeTomorrow00).toLocaleDateString("en-US", {
+                    timeZone: "Asia/Jakarta",
+                  })}{" "}
                   (Tomorrow)
                 </h2>
                 <div className="flex flex-row flex-wrap gap-3">
@@ -170,7 +175,9 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-bold">Release Date</h2>
             <p className="text-base font-normal">
-              {new Date(movie.releaseDate).toLocaleDateString("en-US")}
+              {new Date(movie.releaseDate).toLocaleDateString("en-US", {
+                timeZone: "Asia/Jakarta",
+              })}
             </p>
           </div>
           <div className="flex flex-col gap-1">
