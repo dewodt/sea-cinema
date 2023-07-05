@@ -45,6 +45,7 @@ const SignInForm = () => {
       } else {
         // If response success
         toast.success("Sign in successful");
+        router.refresh();
         router.push("/");
       }
     } catch (error) {
