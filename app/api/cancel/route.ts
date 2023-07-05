@@ -46,6 +46,14 @@ export const POST = async (req: NextRequest) => {
   }
   const { ticketPrice } = ticket.movie;
 
+  // Check if ticket is already expired or no
+  if (Date.now() >= ticket.dateTimeStart.getTime()) {
+    return NextResponse.json(
+      { error: "Bad Request", message: "Ticket is already expired!" },
+      { status: 400 }
+    );
+  }
+
   // Create ticket and update user's balance and transaction record
   await prisma.user.update({
     where: { username: username },
