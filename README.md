@@ -33,6 +33,7 @@ Note that cloning the repository and running `npm run dev` will not work because
 - NextAuth (Authentication)
 - CockroachDB (Database Provider)
 - Prisma (Object Relational Mapper)
+- React Hot Toast (Toasts)
 - bcrypt (Hashing Passwords)
 
 # 🌐 Pages
