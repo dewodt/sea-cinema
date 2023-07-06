@@ -63,7 +63,14 @@ export const POST = async (req: NextRequest) => {
   const availableSchedule = [];
   for (let i = 0; i < 4; i++) {
     const utcHour = 12 + 3 * i - 7;
-    const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
+
+    // Case 1: 12am - 7am WIB (5pm - 12am UTC) => UTC Date is lagging one day
+    // Case 2: 7 am ~ 12 am WIB (12am - 5pm UTC) => UTC Date is the same as WIB Date
+    const utcHourNow = new Date().getUTCHours();
+    const correction =
+      utcHourNow >= 17 && utcHourNow <= 24 ? 24 * 3600 * 1000 : 0;
+    const timeTodayIndex =
+      new Date().setUTCHours(utcHour, 0, 0, 0) + correction;
     const timeTomorrowIndex = timeTodayIndex + 24 * 60 * 60 * 1000;
     const timeNow = Date.now();
 
@@ -75,6 +82,7 @@ export const POST = async (req: NextRequest) => {
     // Tomorrow is no doubt available
     availableSchedule.push(timeTomorrowIndex);
   }
+
   if (!availableSchedule.includes(time)) {
     return NextResponse.json(
       {

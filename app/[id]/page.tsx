@@ -18,16 +18,23 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
   // ASSUMPTIONS: ALL SCHEDULE IS IN INDONESIAN WIB TIME.
   // Schedule time WIB: 12:00, 15:00, 18:00, 21:00
   // Schedule time UTC: 5:00, 8:00, 11:00, 14:00
-  const timeNow = new Date().getTime();
+  const timeNow = Date.now();
+  const timeTomorrow = timeNow + 24 * 3600 * 1000;
   const timeRelease = movie.releaseDate.getTime();
-  const timeToday00 = new Date().setUTCHours(-7, 0, 0, 0);
-  const timeTomorrow00 = timeToday00 + 24 * 60 * 60 * 1000;
 
   // At certain times, some schedules have passed so disable the button.
   const scheduleToday = Array.from({ length: 4 }, (_, index) => {
     const hour = 12 + 3 * index;
     const utcHour = hour - 7;
-    const timeTodayIndex = new Date().setUTCHours(utcHour, 0, 0, 0);
+
+    // Case 1: 12am - 7am WIB (5pm - 12am UTC) => UTC Date is lagging one day
+    // Case 2: 7 am ~ 12 am WIB (12am - 5pm UTC) => UTC Date is the same as WIB Date
+    const utcHourNow = new Date().getUTCHours();
+    const correction =
+      utcHourNow >= 17 && utcHourNow <= 24 ? 24 * 3600 * 1000 : 0;
+    const timeTodayIndex =
+      new Date().setUTCHours(utcHour, 0, 0, 0) + correction;
+
     return {
       buttonText: `${hour}:00`,
       buttonDisabled: timeNow > timeTodayIndex, // Disable if time is passed
@@ -39,8 +46,17 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
   const scheduleTomorrow = Array.from({ length: 4 }, (_, index) => {
     const hour = 12 + 3 * index;
     const utcHour = hour - 7;
+
+    // Case 1: 12am - 7am WIB (5pm - 12am UTC) => UTC Date is lagging one day
+    // Case 2: 7 am ~ 12 am WIB (12am - 5pm UTC) => UTC Date is the same as WIB Date
+    const utcHourNow = new Date().getUTCHours();
+    const correction =
+      utcHourNow >= 17 && utcHourNow <= 24 ? 24 * 3600 * 1000 : 0;
     const timeTomorrowIndex =
-      new Date().setUTCHours(utcHour, 0, 0, 0) + 24 * 60 * 60 * 1000;
+      new Date().setUTCHours(utcHour, 0, 0, 0) +
+      24 * 60 * 60 * 1000 +
+      correction;
+
     return {
       buttonText: `${hour}:00`,
       buttonLink: `/${movie.id}/${timeTomorrowIndex}`,
@@ -76,10 +92,10 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
           {/* Schedule */}
           <div className="flex flex-col gap-3">
             {/* Today */}
-            {timeToday00 >= timeRelease && (
+            {timeNow >= timeRelease && (
               <div className="flex flex-col gap-2">
                 <h2 className="text-lg font-bold">
-                  {new Date(timeToday00).toLocaleDateString("en-US", {
+                  {new Date(timeNow).toLocaleDateString("en-US", {
                     timeZone: "Asia/Jakarta",
                   })}{" "}
                   (Today)
@@ -120,10 +136,10 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
             )}
 
             {/* Tomorrow */}
-            {timeTomorrow00 >= timeRelease && (
+            {timeTomorrow >= timeRelease && (
               <div className="flex flex-col gap-2">
                 <h2 className="text-lg font-bold">
-                  {new Date(timeTomorrow00).toLocaleDateString("en-US", {
+                  {new Date(timeTomorrow).toLocaleDateString("en-US", {
                     timeZone: "Asia/Jakarta",
                   })}{" "}
                   (Tomorrow)
@@ -153,9 +169,7 @@ const MovieDetail = async ({ params }: { params: { id: string } }) => {
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-bold">Release Date</h2>
             <p className="text-base font-normal">
-              {new Date(movie.releaseDate).toLocaleDateString("en-US", {
-                timeZone: "Asia/Jakarta",
-              })}
+              {new Date(movie.releaseDate).toLocaleDateString("en-US")}
             </p>
           </div>
           <div className="flex flex-col gap-1">
